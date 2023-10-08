@@ -1,0 +1,80 @@
+---
+title: "Method stability"
+author: "Klinkenberg"
+date: "8/14/2017"
+output: html_document
+---
+
+```{r}
+library(rgl)
+library(rglwidget)
+library(knitr)
+knit_hooks$set(webgl = hook_webgl)
+```
+
+```{r, fig.width=10, message=FALSE, warning=FALSE}
+load("all_estimations_special_operands.Rdata")
+
+# par3d(mouseMode = "zAxis")
+
+mfrow3d(nr = 1, nc = 3, sharedMouse = TRUE)
+
+plot3d(all.estimations$ltm.data.1.a, 
+       all.estimations$ltm.data.2.a, 
+       all.estimations$ltm.data.3.a,
+       ylim = c(0, 2),
+       xlim = c(0, 2),
+       zlim = c(0, 2),
+       main = "LTM",
+       xlab = "2014",
+       ylab = "2015",
+       zlab = "2016",
+       # col  = ifelse(all.estimations$special.operands == 1, "darkgreen", "darkorange"),
+       # col  = ifelse(all.estimations$zero.one         == 1, "darkgreen", "darkorange"),
+       # col  = ifelse(all.estimations$powers           == 1, "darkgreen", "darkorange"),
+       col  = ifelse(all.estimations$single.digit     == 1, "darkgreen", "darkorange"),
+       size = 6)
+
+# polygon3d(x = c(1,2,2,1), y =  c(1,2,2,1))
+# shade3d(cube3d(col="red", alpha=.5));
+ shade3d( translate3d(scale3d( cube3d(col = "red", alpha = .5), .25, .25, .25), .25,.25,.25) )
+
+plot3d(all.estimations$glm.2pl.data.1.a,
+       all.estimations$glm.2pl.data.2.a,
+       all.estimations$glm.2pl.data.3.a,     
+       ylim = c(0, 2),
+       xlim = c(0, 2),
+       zlim = c(0, 2),
+       main = "GLM",
+       xlab = "2014",
+       ylab = "2015",
+       zlab = "2016",
+       #col  = rainbow(100),
+       # col  = ifelse(all.estimations$special.operands == 1, "darkgreen", "darkorange"),
+       # col  = ifelse(all.estimations$zero.one         == 1, "darkgreen", "darkorange"),
+       # col  = ifelse(all.estimations$powers           == 1, "darkgreen", "darkorange"),
+       col  = ifelse(all.estimations$single.digit     == 1, "darkgreen", "darkorange"),
+       size = 6)
+
+ shade3d( translate3d(scale3d( cube3d(col = "red", alpha = .5), .25, .25, .25), .25,.25,.25) )
+
+plot3d(all.estimations$nr.data.1.a,
+       all.estimations$nr.data.2.a,
+       all.estimations$nr.data.3.a,
+       ylim = c(0, 2),
+       xlim = c(0, 2),
+       zlim = c(0, 2),
+       main = "NR",
+       xlab = "2014",
+       ylab = "2015",
+       zlab = "2016",
+       # col  = ifelse(all.estimations$special.operands == 1, "darkgreen", "darkorange"),
+       # col  = ifelse(all.estimations$zero.one         == 1, "darkgreen", "darkorange"),
+       # col  = ifelse(all.estimations$powers           == 1, "darkgreen", "darkorange"),
+       col  = ifelse(all.estimations$single.digit     == 1, "darkgreen", "darkorange"),
+       size = 6)
+
+ shade3d( translate3d(scale3d( cube3d(col = "red", alpha = .5), .25, .25, .25), .25,.25,.25) )
+
+rglwidget()
+```

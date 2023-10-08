@@ -1,0 +1,31 @@
+---
+title: "Sensitivity and Specificity"
+author: "Klinkenberg"
+date: "7/25/2018"
+output: html_document
+---
+
+```{r}
+# install.packages("xtable")
+library("xtable")
+```
+
+
+## Results for Elo estimations
+
+```{r}
+load("../a-parameter_negative_a/9_analyse_sensitivity_specificity/cross_sen_spe_neg.Rdata")
+load("../a-parameter_zero_or_one/9_analyse_sensitivity_specificity/cross_sen_spe_bin.Rdata")
+```
+
+Combine uniform and binom scenario
+
+```{r}
+elo.sen.spe <- cbind(sen.spe.neg, sen.spe.bin)
+elo.sen.spe
+```
+
+```{r, comment=NA}
+print(xtable(elo.sen.spe, type = "latex"))
+```
+

@@ -1,0 +1,5 @@
+x = seq(-4,4,.0)
+x = seq(-4,4,.01)
+plot(x, dnorm(x, .75, .1), type="l")
+x = seq(0,1,.001)
+plot(x, dnorm(x, .75, .1), type="l")

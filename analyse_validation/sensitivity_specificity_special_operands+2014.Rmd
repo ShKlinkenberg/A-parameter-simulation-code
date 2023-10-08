@@ -1,0 +1,97 @@
+---
+title: "Sensitivity Specificity 2014"
+subtitle: "Exploratory analysis"
+output:
+  html_document: default
+---
+
+```{r}
+rm(list = ls())
+load("all_estimations_special_operands.Rdata")
+
+names(all.estimations)
+```
+
+Subset collumns
+
+```{r}
+# Select all collumns with a parameter values
+a.parameter.col <- grep("\\.a$|zero|powers|single|special", names(all.estimations), value = T)
+
+a.parameter.col
+
+good.items <- (all.estimations[, a.parameter.col] >= .5)
+
+# recode special operands to reflect bad items
+good.items[,grep("\\.a$", a.parameter.col, invert = T)] <- !good.items[,grep("\\.a$", a.parameter.col, invert = T)]
+
+```
+
+
+## Cross tabular
+
+Cross tabs for 2014 with:
+
+### zero.one
+
+```{r}
+table(good.items[,"zero.one"],
+      good.items[,"glm.2pl.data.1.a"]) -> cross.tabs.ltm
+cross.tabs.ltm
+
+sen <- cross.tabs.ltm[2,2] / sum(cross.tabs.ltm[,2])
+spe <- cross.tabs.ltm[1,1] / sum(cross.tabs.ltm[,1])
+
+list(Sensitivity = sen,
+     Specificity = spe) -> senspe
+
+lapply(senspe,round,2)
+```
+
+### powers
+
+```{r}
+table(good.items[,"powers"],
+      good.items[,"glm.2pl.data.1.a"]) -> cross.tabs.glm
+cross.tabs.glm
+
+sen <- cross.tabs.glm[2,2] / sum(cross.tabs.glm[,2])
+spe <- cross.tabs.glm[1,1] / sum(cross.tabs.glm[,1])
+
+list(Sensitivity = sen,
+     Specificity = spe) -> senspe
+
+lapply(senspe,round,2)
+```
+
+### single.digit
+
+```{r}
+table(good.items[,"single.digit"],
+      good.items[,"glm.2pl.data.1.a"]) -> cross.tabs.rn
+cross.tabs.rn
+
+sen <- cross.tabs.rn[2,2] / sum(cross.tabs.rn[,2])
+spe <- cross.tabs.rn[1,1] / sum(cross.tabs.rn[,1])
+
+list(Sensitivity = sen,
+     Specificity = spe) -> senspe
+
+lapply(senspe,round,2)
+```
+
+### special.operands
+
+```{r}
+table(good.items[,"special.operands"],
+      good.items[,"glm.2pl.data.1.a"]) -> cross.tabs.glm
+cross.tabs.glm
+
+sen <- cross.tabs.glm[2,2] / sum(cross.tabs.glm[,2])
+spe <- cross.tabs.glm[1,1] / sum(cross.tabs.glm[,1])
+
+list(Sensitivity = sen,
+     Specificity = spe) -> senspe
+
+lapply(senspe,round,2)
+```

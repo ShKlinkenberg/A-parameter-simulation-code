@@ -1,0 +1,90 @@
+---
+title: "Deadlines as predictors"
+author: "Klinkenberg"
+date: "3/15/2018"
+output: html_document
+---
+
+Load data
+
+```{r}
+rm(list = ls())
+
+load("../2_glm_2par/glm_2par_data_estimaton_Table.Rdata")
+
+names(glm.2par.data.estimations)
+```
+
+Predict discrimination
+
+```{r}
+fit <- lm(glm.2pl.data.1.a ~ factor(deadline), data = glm.2par.data.estimations)
+
+summary(fit)
+aov(fit)
+summary(aov(fit))
+
+plot(fit)
+
+TukeyHSD(aov(fit))
+```
+
+```{r}
+mean.a.value <- aggregate(glm.2pl.data.1.a ~ factor(deadline), mean, data = glm.2par.data.estimations)
+mean.a.value
+plot(mean.a.value)
+
+sd.a.value <- aggregate(glm.2pl.data.1.a ~ factor(deadline), sd, data = glm.2par.data.estimations)
+sd.a.value
+
+n.a.value <- aggregate(glm.2pl.data.1.a ~ factor(deadline), length, data = glm.2par.data.estimations)
+n.a.value
+
+se.a.value <- sd.a.value$glm.2pl.data.1.a / sqrt(n.a.value$glm.2pl.data.1.a)
+
+mean.a.value$lb <- mean.a.value$glm.2pl.data.1.a - (1.96*se.a.value)
+mean.a.value$ub <- mean.a.value$glm.2pl.data.1.a + (1.96*se.a.value) 
+```
+
+```{r}
+# pdf("deadline_predictor_for_discrimination.pdf", 
+#     height = 4.5, 
+#     width  = 6)
+
+plot(glm.2par.data.estimations$deadline,
+     glm.2par.data.estimations$glm.2pl.data.1.a,
+     main = 'Item discrimination across response deadlines',
+     ylab = 'a-parameter estimation',
+     xlab = 'Item response deadline', 
+     las  = 1,
+     pch  = 16,
+     col  = rgb(1, 0.5490196, 0, .5))
+
+lines(c(5,10,15,20), 
+      mean.a.value$glm.2pl.data.1.a, 
+      lwd  = 2)
+
+segments(c(5,10,15,20),
+         mean.a.value$lb,
+         c(5,10,15,20),
+         mean.a.value$ub,
+         lwd = 2)
+
+segments(c(5,10,15,20)-.25,
+         mean.a.value$lb,
+         c(5,10,15,20)+.25,
+         mean.a.value$lb,
+         lwd = 2)
+
+segments(c(5,10,15,20)-.25,
+         mean.a.value$ub,
+         c(5,10,15,20)+.25,
+         mean.a.value$ub,
+         lwd = 2)
+
+# dev.off()
+
+# Copy plot to manuscript
+# system("cp ../../analyse_validity_in_deadline_variation/3_deadline_predictor_for_discrimination/deadline_predictor_for_discrimination.pdf manuscript/images/")
+```
+

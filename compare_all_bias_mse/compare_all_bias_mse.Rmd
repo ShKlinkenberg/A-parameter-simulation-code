@@ -1,0 +1,211 @@
+---
+title: "All BIAS and MSE"
+author: "Klinkenberg"
+date: "28/7/2018"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+# install.packages("xtable")
+library("xtable")
+```
+
+```{r, echo=FALSE}
+rm(list = ls())
+library("stringr")
+
+load("../a-parameter_negative_a/8_analysis_bias_sem/bias.mse.neg.Rdata")
+bias.mse.a.neg     <- bias.mse.a
+bias.mse.beta.neg  <- bias.mse.beta
+bias.mse.theta.neg <- bias.mse.theta
+
+load("../a-parameter_one_at_75/8_analysis_bias_mse/bias.mse.one.Rdata")
+bias.mse.a.one     <- bias.mse.a
+bias.mse.beta.one  <- bias.mse.beta
+bias.mse.theta.one <- bias.mse.theta
+
+load("../a-parameter_zero_or_one/8_analysis_bias_mse/bias.mse.zero.Rdata")
+bias.mse.a.zero     <- bias.mse.a
+bias.mse.beta.zero  <- bias.mse.beta
+bias.mse.theta.zero <- bias.mse.theta
+```
+
+## Theta
+
+```{r, echo=FALSE, eval=FALSE}
+cbind(bias.mse.theta.neg,
+      bias.mse.theta.one,
+      bias.mse.theta.zero) -> all.theta.bias.mse
+
+all.theta.bias.mse
+```
+
+## Beta
+
+```{r, echo=FALSE, eval=FALSE}
+cbind(bias.mse.beta.neg,
+      bias.mse.beta.one,
+      bias.mse.beta.zero) -> all.beta.bias.mse
+
+all.beta.bias.mse
+```
+
+## A-par
+
+```{r, rows.print=15, echo=FALSE, eval=FALSE}
+cbind(bias.mse.a.neg,
+      bias.mse.a.one,
+      bias.mse.a.zero) -> all.a.bias.mse
+
+all.a.bias.mse
+```
+
+## A negative
+
+```{r, echo=FALSE, rownames.print = FALSE, comment=NA}
+# row.names(bias.mse.a.neg)
+
+bias.mse.a.neg$method <- str_extract(row.names(bias.mse.a.neg), "ltm|glm|nr")
+bias.mse.a.neg$method <- c(NA, rep("ltm", 3), rep("glm -int",3), rep("glm +int",3), rep("nr",3))
+bias.mse.a.neg$data   <- str_extract(row.names(bias.mse.a.neg), "full|sparse|elo")
+
+bias.mse.a.neg <- bias.mse.a.neg[-1,]
+
+reshape(data      = bias.mse.a.neg, 
+        idvar     = "method",
+        timevar   = "data",
+        direction = "wide") -> a.bias.mse.neg.wide
+
+# Subset to relevant estimations
+bias.mse.beta.neg <- bias.mse.beta.neg[c(-1,-4),]
+bias.mse.beta.neg$data   <- str_extract(row.names(bias.mse.beta.neg), "full|sparse|elo")
+bias.mse.beta.neg$beta   <- "beta"
+
+reshape(data      = bias.mse.beta.neg,
+        idvar     = "beta",
+        timevar   = "data",
+        direction = "wide") -> beta.bias.mse.neg.wide
+
+names(beta.bias.mse.neg.wide) <- names(a.bias.mse.neg.wide)
+
+# Subset to relevant estimations
+bias.mse.theta.neg       <- bias.mse.theta.neg[c(3,4,2),]
+bias.mse.theta.neg$data  <- c("full", "sparse", "elo")
+bias.mse.theta.neg$theta <- "theta"
+
+reshape(data      = bias.mse.theta.neg,
+        idvar     = "theta",
+        timevar   = "data",
+        direction = "wide") -> theta.bias.mse.neg.wide
+
+names(theta.bias.mse.neg.wide) <- names(a.bias.mse.neg.wide)
+
+
+rbind(beta.bias.mse.neg.wide,
+      theta.bias.mse.neg.wide,
+      a.bias.mse.neg.wide) -> all.neg.beta.theta.a
+
+all.neg.beta.theta.a
+
+print(xtable(all.neg.beta.theta.a, type = "latex", digits = 3))
+```
+
+## A one
+
+```{r, echo=FALSE, rownames.print = FALSE, comment=NA}
+# row.names(bias.mse.a.neg)
+
+bias.mse.a.one$method <- str_extract(row.names(bias.mse.a.one), "ltm|glm|nr")
+bias.mse.a.one$method <- c(NA, rep("ltm", 3), rep("glm -int",3), rep("glm +int",3), rep("nr",3))
+bias.mse.a.one$data   <- str_extract(row.names(bias.mse.a.one), "full|sparse|elo")
+
+bias.mse.a.one <- bias.mse.a.one[-1,]
+
+reshape(data      = bias.mse.a.one, 
+        idvar     = "method",
+        timevar   = "data",
+        direction = "wide") -> a.bias.mse.one.wide
+
+# Subset to relevant estimations
+bias.mse.beta.one <- bias.mse.beta.one[c(-1,-4),]
+bias.mse.beta.one$data   <- str_extract(row.names(bias.mse.beta.one), "full|sparse|elo")
+bias.mse.beta.one$beta   <- "beta"
+
+reshape(data      = bias.mse.beta.one,
+        idvar     = "beta",
+        timevar   = "data",
+        direction = "wide") -> beta.bias.mse.one.wide
+
+names(beta.bias.mse.one.wide) <- names(a.bias.mse.one.wide)
+
+# Subset to relevant estimations
+bias.mse.theta.one       <- bias.mse.theta.one[c(3,4,2),]
+bias.mse.theta.one$data  <- c("full", "sparse", "elo")
+bias.mse.theta.one$theta <- "theta"
+
+reshape(data      = bias.mse.theta.one,
+        idvar     = "theta",
+        timevar   = "data",
+        direction = "wide") -> theta.bias.mse.one.wide
+
+names(theta.bias.mse.one.wide) <- names(a.bias.mse.one.wide)
+
+rbind(beta.bias.mse.one.wide,
+      theta.bias.mse.one.wide,
+      a.bias.mse.one.wide) -> all.one.beta.theta.a
+
+all.one.beta.theta.a
+
+print(xtable(all.one.beta.theta.a, type = "latex", digits = 3))
+```
+
+## A zero or one
+
+```{r, echo=FALSE, rownames.print = FALSE, comment=NA}
+# row.names(bias.mse.a.neg)
+
+bias.mse.a.zero$method <- str_extract(row.names(bias.mse.a.zero), "ltm|glm|nr")
+bias.mse.a.zero$method <- c(NA, rep("ltm", 3), rep("glm -int",3), rep("glm +int",3), rep("nr",3))
+bias.mse.a.zero$data   <- str_extract(row.names(bias.mse.a.zero), "full|sparse|elo")
+
+bias.mse.a.zero <- bias.mse.a.zero[-1,]
+
+reshape(data      = bias.mse.a.zero, 
+        idvar     = "method",
+        timevar   = "data",
+        direction = "wide") -> a.bias.mse.zero.wide
+
+# Subset to relevant estimations
+bias.mse.beta.zero <- bias.mse.beta.zero[c(-1,-4),]
+bias.mse.beta.zero$data   <- str_extract(row.names(bias.mse.beta.zero), "full|sparse|elo")
+bias.mse.beta.zero$beta   <- "beta"
+
+reshape(data      = bias.mse.beta.zero,
+        idvar     = "beta",
+        timevar   = "data",
+        direction = "wide") -> beta.bias.mse.zero.wide
+
+names(beta.bias.mse.zero.wide) <- names(a.bias.mse.zero.wide)
+
+# Subset to relevant estimations
+bias.mse.theta.zero       <- bias.mse.theta.zero[c(3,4,2),]
+bias.mse.theta.zero$data  <- c("full", "sparse", "elo")
+bias.mse.theta.zero$theta <- "theta"
+
+reshape(data      = bias.mse.theta.zero,
+        idvar     = "theta",
+        timevar   = "data",
+        direction = "wide") -> theta.bias.mse.zero.wide
+
+names(theta.bias.mse.zero.wide) <- names(a.bias.mse.zero.wide)
+
+rbind(beta.bias.mse.zero.wide,
+      theta.bias.mse.zero.wide,
+      a.bias.mse.zero.wide) -> all.zero.one.beta.theta.a
+
+all.zero.one.beta.theta.a
+
+print(xtable(all.zero.one.beta.theta.a, type = "latex", digits = 3))
+```
